@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.masterlee.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.masterlee.entity.User">
+    <id column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="union_id" jdbcType="VARCHAR" property="unionId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="country" jdbcType="VARCHAR" property="country" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    open_id, union_id, nick_name, avatar_url, real_name, phone, gender, country, city, 
+    province
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from S_USER
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from S_USER
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.masterlee.entity.User">
+    insert into S_USER (open_id, union_id, nick_name, 
+      avatar_url, real_name, phone, 
+      gender, country, city, 
+      province)
+    values (#{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
+      #{avatarUrl,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.masterlee.entity.User">
+    insert into S_USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="openId != null">
+        open_id,
+      </if>
+      <if test="unionId != null">
+        union_id,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="avatarUrl != null">
+        avatar_url,
+      </if>
+      <if test="realName != null">
+        real_name,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="country != null">
+        country,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="unionId != null">
+        #{unionId,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarUrl != null">
+        #{avatarUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null">
+        #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.masterlee.entity.User">
+    update S_USER
+    <set>
+      <if test="unionId != null">
+        union_id = #{unionId,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="avatarUrl != null">
+        avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null">
+        country = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.masterlee.entity.User">
+    update S_USER
+    set union_id = #{unionId,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=VARCHAR},
+      country = #{country,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR}
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </update>
+</mapper>
