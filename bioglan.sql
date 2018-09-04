@@ -1,37 +1,58 @@
 /*
- Navicat Premium Data Transfer
+Navicat MySQL Data Transfer
 
- Source Server         : 本地连接
- Source Server Type    : MySQL
- Source Server Version : 50718
- Source Host           : localhost
- Source Database       : bioglan
+Source Server         : 本地
+Source Server Version : 50722
+Source Host           : localhost:3306
+Source Database       : bioglan
 
- Target Server Type    : MySQL
- Target Server Version : 50718
- File Encoding         : utf-8
+Target Server Type    : MYSQL
+Target Server Version : 50722
+File Encoding         : 65001
 
- Date: 09/03/2018 17:39:20 PM
+Date: 2018-09-03 22:59:23
 */
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
---  Table structure for `S_RECORD`
+-- Table structure for `s_question`
 -- ----------------------------
-DROP TABLE IF EXISTS `S_RECORD`;
-CREATE TABLE `S_RECORD` (
+DROP TABLE IF EXISTS `s_question`;
+CREATE TABLE `s_question` (
+  `question` varchar(250) DEFAULT NULL,
+  `id` varchar(32) NOT NULL,
+  `options` varchar(250) DEFAULT NULL,
+  `answer` varchar(10) DEFAULT NULL,
+  `score` double(8,0) DEFAULT NULL,
+  `include_image` tinyint(1) DEFAULT NULL,
+  `type` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of s_question
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `s_record`
+-- ----------------------------
+DROP TABLE IF EXISTS `s_record`;
+CREATE TABLE `s_record` (
   `create_time` datetime DEFAULT NULL,
   `open_id` varchar(32) DEFAULT NULL,
   `id` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
---  Table structure for `S_SCORE`
+-- Records of s_record
 -- ----------------------------
-DROP TABLE IF EXISTS `S_SCORE`;
-CREATE TABLE `S_SCORE` (
+
+-- ----------------------------
+-- Table structure for `s_score`
+-- ----------------------------
+DROP TABLE IF EXISTS `s_score`;
+CREATE TABLE `s_score` (
   `score` double(10,0) DEFAULT NULL,
   `id` varchar(32) NOT NULL,
   `open_id` varchar(32) DEFAULT NULL,
@@ -41,10 +62,14 @@ CREATE TABLE `S_SCORE` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
---  Table structure for `S_USER`
+-- Records of s_score
 -- ----------------------------
-DROP TABLE IF EXISTS `S_USER`;
-CREATE TABLE `S_USER` (
+
+-- ----------------------------
+-- Table structure for `s_user`
+-- ----------------------------
+DROP TABLE IF EXISTS `s_user`;
+CREATE TABLE `s_user` (
   `open_id` varchar(32) NOT NULL,
   `union_id` varchar(32) DEFAULT NULL,
   `nick_name` varchar(32) DEFAULT NULL,
@@ -58,4 +83,6 @@ CREATE TABLE `S_USER` (
   PRIMARY KEY (`open_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SET FOREIGN_KEY_CHECKS = 1;
+-- ----------------------------
+-- Records of s_user
+-- ----------------------------
