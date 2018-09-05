@@ -7,6 +7,7 @@ import com.masterlee.entity.User;
 import com.masterlee.model.ResponseResult;
 import com.masterlee.service.UserService;
 import com.masterlee.tools.Common;
+import com.masterlee.tools.RedisUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -34,17 +35,18 @@ public class AdminController {
 
     @RequestMapping(value = "/test",produces = "application/json; charset=utf-8")
     @ResponseBody
-    public String test(){
+    public String  test(){
+        ResponseResult<String> result =  new ResponseResult<String>("helloworld",false);
         Record record = new Record();
         record.setCreateTime(new Date());
         record.setOpenId("12314");
         record.setId(Common.getuuid());
         userService.insertRecord(record);
-        return "helloworld";
+        return JSON.toJSONString(result) ;
     }
     @RequestMapping(value = "/getopenid",produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseResult getUserOpenid(@RequestParam(required = true,value = "code")String wxCode){
+    public String getUserOpenid(@RequestParam(required = true,value = "code")String wxCode){
         ResponseResult<String> result =  new ResponseResult<String>(null,false);
         String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid="+AppId+"&secret="+AppSecret+"&js_code="+wxCode+"&grant_type=authorization_code";
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -63,23 +65,27 @@ public class AdminController {
                 Map mapTypes = JSON.parseObject(responsestr);
                 resultString = mapTypes.get("openid").toString();
                 //取到openID 要存入Redis
-
-
+                RedisUtil.set(resultString,"login");
+//                RedisUtil.incr(resultString);
+//                long count =  Long.parseLong(RedisUtil.get(resultString)) ;
                 result = new ResponseResult<>(resultString,true);
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return result;
+        return JSON.toJSONString(result);
     }
     @RequestMapping(value = "/userlogin",method = {RequestMethod.POST},produces = "application/json; charset=utf-8")
     @ResponseBody
-    public ResponseResult userLogin(@RequestBody HashMap userinfo){
+    public String userLogin(@RequestBody HashMap userinfo){
         ResponseResult<String> result =  new ResponseResult<String>("",false);
         try {
             String openid = userinfo.get("openid").toString();
             //这里要验证openid  从Redis查询
-
+            String count  = RedisUtil.get(openid);
+            if (count ==null){
+                return  JSON.toJSONString(result);
+            }
             User user = userService.select(openid);
             if(user == null){
                 user.setAvatarUrl(userinfo.get("avatarUrl").toString());
@@ -99,6 +105,21 @@ public class AdminController {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return  result;
+        return  JSON.toJSONString(result);
+    }
+    @RequestMapping(value = "/checkCount",method = {RequestMethod.GET},produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String checkCount(@RequestParam(required = true,value = "openid")String openid){
+        ResponseResult<String> result =  new ResponseResult<String>("",false);
+        String count =  RedisUtil.get(openid);
+        if (count ==null) {
+            return  JSON.toJSONString(result);
         }
+         if(Long.parseLong(count)>2){
+             result.setResponseData("您的答题机会已用完");
+             return  JSON.toJSONString(result);
+         }
+         result.setResponseStatus(true);
+        return  JSON.toJSONString(result);
+    }
 }
