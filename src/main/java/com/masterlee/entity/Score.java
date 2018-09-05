@@ -1,5 +1,7 @@
 package com.masterlee.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Score {
@@ -10,7 +12,7 @@ public class Score {
     private String openId;
 
     private Integer time;
-
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 
     public String getId() {
