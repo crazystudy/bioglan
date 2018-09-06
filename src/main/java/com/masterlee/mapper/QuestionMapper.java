@@ -2,6 +2,8 @@ package com.masterlee.mapper;
 
 import com.masterlee.entity.Question;
 
+import java.util.List;
+
 public interface QuestionMapper {
     int deleteByPrimaryKey(String id);
 
@@ -14,4 +16,5 @@ public interface QuestionMapper {
     int updateByPrimaryKeySelective(Question record);
 
     int updateByPrimaryKey(Question record);
+    List<Question> selectQuestion();
 }

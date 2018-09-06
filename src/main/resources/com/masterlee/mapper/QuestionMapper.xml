@@ -8,10 +8,11 @@
     <result column="answer" jdbcType="VARCHAR" property="answer" />
     <result column="score" jdbcType="DOUBLE" property="score" />
     <result column="include_image" jdbcType="BIT" property="includeImage" />
-    <result column="type" jdbcType="BIT" property="type" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="second_question" jdbcType="VARCHAR" property="secondQuestion" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, question, options, answer, score, include_image, type
+    id, question, options, answer, score, include_image, type, second_question
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -26,10 +27,10 @@
   <insert id="insert" parameterType="com.masterlee.entity.Question">
     insert into s_question (id, question, options, 
       answer, score, include_image, 
-      type)
+      type, second_question)
     values (#{id,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, #{options,jdbcType=VARCHAR}, 
       #{answer,jdbcType=VARCHAR}, #{score,jdbcType=DOUBLE}, #{includeImage,jdbcType=BIT}, 
-      #{type,jdbcType=BIT})
+      #{type,jdbcType=INTEGER}, #{secondQuestion,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.masterlee.entity.Question">
     insert into s_question
@@ -55,6 +56,9 @@
       <if test="type != null">
         type,
       </if>
+      <if test="secondQuestion != null">
+        second_question,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -76,7 +80,10 @@
         #{includeImage,jdbcType=BIT},
       </if>
       <if test="type != null">
-        #{type,jdbcType=BIT},
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="secondQuestion != null">
+        #{secondQuestion,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -99,7 +106,10 @@
         include_image = #{includeImage,jdbcType=BIT},
       </if>
       <if test="type != null">
-        type = #{type,jdbcType=BIT},
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="secondQuestion != null">
+        second_question = #{secondQuestion,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
@@ -111,7 +121,11 @@
       answer = #{answer,jdbcType=VARCHAR},
       score = #{score,jdbcType=DOUBLE},
       include_image = #{includeImage,jdbcType=BIT},
-      type = #{type,jdbcType=BIT}
+      type = #{type,jdbcType=INTEGER},
+      second_question = #{secondQuestion,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <select id="selectQuestion" resultMap="BaseResultMap">
+    select *  from s_question
+  </select>
 </mapper>

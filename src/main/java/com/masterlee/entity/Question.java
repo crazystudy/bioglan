@@ -13,7 +13,9 @@ public class Question {
 
     private Boolean includeImage;
 
-    private Boolean type;
+    private Integer type;
+
+    private String secondQuestion;
 
     public String getId() {
         return id;
@@ -63,11 +65,19 @@ public class Question {
         this.includeImage = includeImage;
     }
 
-    public Boolean getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(Boolean type) {
+    public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getSecondQuestion() {
+        return secondQuestion;
+    }
+
+    public void setSecondQuestion(String secondQuestion) {
+        this.secondQuestion = secondQuestion == null ? null : secondQuestion.trim();
     }
 }

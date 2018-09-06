@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -107,7 +108,7 @@ public class AdminController {
         }
         return  JSON.toJSONString(result);
     }
-    @RequestMapping(value = "/checkCount",method = {RequestMethod.GET},produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/checkcount",method = {RequestMethod.GET},produces = "application/json; charset=utf-8")
     @ResponseBody
     public String checkCount(@RequestParam(required = true,value = "openid")String openid){
         ResponseResult<String> result =  new ResponseResult<String>("",false);
@@ -122,4 +123,17 @@ public class AdminController {
          result.setResponseStatus(true);
         return  JSON.toJSONString(result);
     }
+    @RequestMapping(value = "/getquestion",method = {RequestMethod.GET},produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String checkCount(){
+        ResponseResult<Question> result =  new ResponseResult(null,false);
+        try {
+            List<Question>  list  = userService.selectQuestion();
+            result =  new ResponseResult(list,list.size(),true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  JSON.toJSONString(result);
+    }
+
 }
