@@ -13,7 +13,7 @@ public class Question {
 
     private Boolean includeImage;
 
-    private Integer type;
+    private Boolean type;
 
     private String secondQuestion;
 
@@ -65,11 +65,11 @@ public class Question {
         this.includeImage = includeImage;
     }
 
-    public Integer getType() {
+    public Boolean getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(Boolean type) {
         this.type = type;
     }
 

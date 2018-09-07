@@ -3,6 +3,7 @@ package com.masterlee.controllers;
 import com.alibaba.fastjson.JSON;
 import com.masterlee.entity.Question;
 import com.masterlee.entity.Record;
+import com.masterlee.entity.Score;
 import com.masterlee.entity.User;
 import com.masterlee.model.ResponseResult;
 import com.masterlee.service.UserService;
@@ -135,5 +136,44 @@ public class AdminController {
         }
         return  JSON.toJSONString(result);
     }
-
+    @RequestMapping(value = "/uploadscore",produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public  String uploadScore(@RequestParam(required = true,value = "openid")String openid,
+                               @RequestParam(required = true,value = "score")Integer score,
+                               @RequestParam(required = true,value = "time")Integer time){
+        ResponseResult<String> result =  new ResponseResult(null,false);
+        try {
+            Score entity = new Score();
+            entity.setCreateTime(new Date());
+            entity.setId(Common.getuuid());
+            entity.setScore(score);
+            entity.setTime(time);
+            entity.setOpenId(openid);
+            userService.insertScore(entity);
+            RedisUtil.incr(openid);
+            result = new ResponseResult<String>("添加成功",true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  JSON.toJSONString(result);
+    }
+    @RequestMapping(value = "/uploaduser",produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public  String uploadUser(@RequestParam(required = true,value = "openid")String openid,
+                               @RequestParam(required = true,value = "phone")String phone,
+                               @RequestParam(required = true,value = "name")String name){
+        ResponseResult<String> result =  new ResponseResult(null,false);
+        try {
+            User user = userService.select(openid);
+            if (user !=null){
+                user.setRealName(name);
+                user.setPhone(phone);
+                userService.update(user);
+                result = new ResponseResult<String>("添加成功",true);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  JSON.toJSONString(result);
+    }
 }

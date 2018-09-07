@@ -8,7 +8,7 @@
     <result column="answer" jdbcType="VARCHAR" property="answer" />
     <result column="score" jdbcType="DOUBLE" property="score" />
     <result column="include_image" jdbcType="BIT" property="includeImage" />
-    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="type" jdbcType="BIT" property="type" />
     <result column="second_question" jdbcType="VARCHAR" property="secondQuestion" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -17,23 +17,23 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from s_question
+    from S_QUESTION
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from s_question
+    delete from S_QUESTION
     where id = #{id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.masterlee.entity.Question">
-    insert into s_question (id, question, options, 
+    insert into S_QUESTION (id, question, options, 
       answer, score, include_image, 
       type, second_question)
     values (#{id,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, #{options,jdbcType=VARCHAR}, 
       #{answer,jdbcType=VARCHAR}, #{score,jdbcType=DOUBLE}, #{includeImage,jdbcType=BIT}, 
-      #{type,jdbcType=INTEGER}, #{secondQuestion,jdbcType=VARCHAR})
+      #{type,jdbcType=BIT}, #{secondQuestion,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.masterlee.entity.Question">
-    insert into s_question
+    insert into S_QUESTION
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -80,7 +80,7 @@
         #{includeImage,jdbcType=BIT},
       </if>
       <if test="type != null">
-        #{type,jdbcType=INTEGER},
+        #{type,jdbcType=BIT},
       </if>
       <if test="secondQuestion != null">
         #{secondQuestion,jdbcType=VARCHAR},
@@ -88,7 +88,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.masterlee.entity.Question">
-    update s_question
+    update S_QUESTION
     <set>
       <if test="question != null">
         question = #{question,jdbcType=VARCHAR},
@@ -106,7 +106,7 @@
         include_image = #{includeImage,jdbcType=BIT},
       </if>
       <if test="type != null">
-        type = #{type,jdbcType=INTEGER},
+        type = #{type,jdbcType=BIT},
       </if>
       <if test="secondQuestion != null">
         second_question = #{secondQuestion,jdbcType=VARCHAR},
@@ -115,17 +115,17 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.masterlee.entity.Question">
-    update s_question
+    update S_QUESTION
     set question = #{question,jdbcType=VARCHAR},
       options = #{options,jdbcType=VARCHAR},
       answer = #{answer,jdbcType=VARCHAR},
       score = #{score,jdbcType=DOUBLE},
       include_image = #{includeImage,jdbcType=BIT},
-      type = #{type,jdbcType=INTEGER},
+      type = #{type,jdbcType=BIT},
       second_question = #{secondQuestion,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <select id="selectQuestion" resultMap="BaseResultMap">
-    select *  from s_question
+    SELECT *  FROM  S_QUESTION
   </select>
 </mapper>

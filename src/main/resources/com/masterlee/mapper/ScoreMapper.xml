@@ -3,7 +3,7 @@
 <mapper namespace="com.masterlee.mapper.ScoreMapper">
   <resultMap id="BaseResultMap" type="com.masterlee.entity.Score">
     <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="score" jdbcType="DOUBLE" property="score" />
+    <result column="score" jdbcType="INTEGER" property="score" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="time" jdbcType="INTEGER" property="time" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -24,7 +24,7 @@
   <insert id="insert" parameterType="com.masterlee.entity.Score">
     insert into S_SCORE (id, score, open_id, 
       time, create_time)
-    values (#{id,jdbcType=VARCHAR}, #{score,jdbcType=DOUBLE}, #{openId,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR}, 
       #{time,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.masterlee.entity.Score">
@@ -51,7 +51,7 @@
         #{id,jdbcType=VARCHAR},
       </if>
       <if test="score != null">
-        #{score,jdbcType=DOUBLE},
+        #{score,jdbcType=INTEGER},
       </if>
       <if test="openId != null">
         #{openId,jdbcType=VARCHAR},
@@ -68,7 +68,7 @@
     update S_SCORE
     <set>
       <if test="score != null">
-        score = #{score,jdbcType=DOUBLE},
+        score = #{score,jdbcType=INTEGER},
       </if>
       <if test="openId != null">
         open_id = #{openId,jdbcType=VARCHAR},
@@ -84,7 +84,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.masterlee.entity.Score">
     update S_SCORE
-    set score = #{score,jdbcType=DOUBLE},
+    set score = #{score,jdbcType=INTEGER},
       open_id = #{openId,jdbcType=VARCHAR},
       time = #{time,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP}
