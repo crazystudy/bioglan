@@ -44,6 +44,7 @@ public class AdminController {
         record.setOpenId("12314");
         record.setId(Common.getuuid());
         userService.insertRecord(record);
+        RedisUtil.set("test","test");
         return JSON.toJSONString(result) ;
     }
     @RequestMapping(value = "/getopenid",produces = "application/json; charset=utf-8")
@@ -90,12 +91,14 @@ public class AdminController {
             }
             User user = userService.select(openid);
             if(user == null){
+                user = new User();
                 user.setAvatarUrl(userinfo.get("avatarUrl").toString());
                 user.setCity(userinfo.get("city").toString());
                 user.setCountry(userinfo.get("country").toString());
                 user.setGender(userinfo.get("gender").toString());
                 user.setProvince(userinfo.get("province").toString());
                 user.setNickName(userinfo.get("nickName").toString());
+                user.setOpenId(openid);
                 userService.insert(user);
             }
             Record record = new Record();
