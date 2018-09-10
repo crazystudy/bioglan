@@ -120,16 +120,16 @@ public class AdminController {
     @RequestMapping(value = "/checkcount",method = {RequestMethod.GET},produces = "application/json; charset=utf-8")
     @ResponseBody
     public String checkCount(@RequestParam(required = true,value = "openid")String openid){
-        ResponseResult<String> result =  new ResponseResult<String>("",false);
-        String count =  RedisUtil.get(openid);
+        ResponseResult<String> result =  new ResponseResult<String>("",true);
+        String count =  RedisUtil.get("Count:"+openid);
         if (count ==null) {
             return  JSON.toJSONString(result);
         }
          if(Long.parseLong(count)>2){
              result.setResponseData("您的答题机会已用完");
+             result.setResponseStatus(false);
              return  JSON.toJSONString(result);
          }
-         result.setResponseStatus(true);
         return  JSON.toJSONString(result);
     }
     @RequestMapping(value = "/getquestion",method = {RequestMethod.GET},produces = "application/json; charset=utf-8")
@@ -144,38 +144,36 @@ public class AdminController {
         }
         return  JSON.toJSONString(result);
     }
-    @RequestMapping(value = "/uploadscore",produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/uploadscore",method ={RequestMethod.POST}, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public  String uploadScore(@RequestParam(required = true,value = "openid")String openid,
-                               @RequestParam(required = true,value = "score")Integer score,
-                               @RequestParam(required = true,value = "time")Integer time){
+    public  String uploadScore(@RequestBody HashMap request){
         ResponseResult<String> result =  new ResponseResult(null,false);
         try {
+            String  openid = request.get("openid").toString();
             Score entity = new Score();
             entity.setCreateTime(new Date());
             entity.setId(Common.getuuid());
-            entity.setScore(score);
-            entity.setTime(time);
+            entity.setScore(Integer.parseInt(request.get("score").toString()));
+            entity.setTime(Integer.parseInt(request.get("time").toString()));
             entity.setOpenId(openid);
             userService.insertScore(entity);
-            RedisUtil.incr(openid);
+            RedisUtil.incr("Count:"+openid);
             result = new ResponseResult<String>("添加成功",true);
         }catch (Exception e){
             e.printStackTrace();
         }
         return  JSON.toJSONString(result);
     }
-    @RequestMapping(value = "/uploaduser",produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/uploaduser",method ={RequestMethod.POST},produces = "application/json; charset=utf-8")
     @ResponseBody
-    public  String uploadUser(@RequestParam(required = true,value = "openid")String openid,
-                               @RequestParam(required = true,value = "phone")String phone,
-                               @RequestParam(required = true,value = "name")String name){
+    public  String uploadUser(@RequestBody HashMap request){
         ResponseResult<String> result =  new ResponseResult(null,false);
         try {
+            String  openid = request.get("openid").toString();
             User user = userService.select(openid);
             if (user !=null){
-                user.setRealName(name);
-                user.setPhone(phone);
+                user.setRealName(request.get("name").toString());
+                user.setPhone(request.get("phone").toString());
                 userService.update(user);
                 result = new ResponseResult<String>("添加成功",true);
             }
