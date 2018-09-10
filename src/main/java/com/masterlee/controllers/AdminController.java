@@ -18,6 +18,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import redis.clients.jedis.Jedis;
 
 
 import java.net.URI;
@@ -35,6 +36,7 @@ public class AdminController {
     private static String AppId = "wx5c16396035f95b8a";
     private static String AppSecret = "e224e54ff8373742d3e8894023146a49";
 
+    private  static  Jedis jedis = new Jedis("localhost",6379);
     @RequestMapping(value = "/test",produces = "application/json; charset=utf-8")
     @ResponseBody
     public String  test(){
@@ -44,7 +46,9 @@ public class AdminController {
         record.setOpenId("12314");
         record.setId(Common.getuuid());
         userService.insertRecord(record);
-        RedisUtil.set("test","test");
+        jedis.set("test","test");
+        jedis.close();
+        //RedisUtil.set("test","test");
         return JSON.toJSONString(result) ;
     }
     @RequestMapping(value = "/getopenid",produces = "application/json; charset=utf-8")
@@ -68,7 +72,8 @@ public class AdminController {
                 Map mapTypes = JSON.parseObject(responsestr);
                 resultString = mapTypes.get("openid").toString();
                 //取到openID 要存入Redis
-                RedisUtil.set(resultString,"login");
+               jedis.set(resultString,"login");
+                jedis.close();
 //                RedisUtil.incr(resultString);
 //                long count =  Long.parseLong(RedisUtil.get(resultString)) ;
                 result = new ResponseResult<>(resultString,true);
