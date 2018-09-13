@@ -170,18 +170,17 @@ public class AdminController {
         }
         return  JSON.toJSONString(result);
     }
-    @RequestMapping(value = "/uploadscore",produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/uploadscore",method ={RequestMethod.POST}, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public  String uploadScore(@RequestParam(required = true,value = "openid")String openid,
-                               @RequestParam(required = true,value = "score")Integer score,
-                               @RequestParam(required = true,value = "time")Integer time){
+    public  String uploadScore(@RequestBody HashMap request){
         ResponseResult<String> result =  new ResponseResult(null,false);
         try {
+            String  openid = request.get("openid").toString();
             Score entity = new Score();
             entity.setCreateTime(new Date());
             entity.setId(Common.getuuid());
-            entity.setScore(score);
-            entity.setTime(time);
+            entity.setScore(Integer.parseInt(request.get("score").toString()));
+            entity.setTime(Integer.parseInt(request.get("time").toString()));
             entity.setOpenId(openid);
             userService.insertScore(entity);
             RedisUtil.incr("Count:"+openid);
@@ -191,17 +190,16 @@ public class AdminController {
         }
         return  JSON.toJSONString(result);
     }
-    @RequestMapping(value = "/uploaduser",produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/uploaduser",method ={RequestMethod.POST},produces = "application/json; charset=utf-8")
     @ResponseBody
-    public  String uploadUser(@RequestParam(required = true,value = "openid")String openid,
-                               @RequestParam(required = true,value = "phone")String phone,
-                               @RequestParam(required = true,value = "name")String name){
+    public  String uploadUser(@RequestBody HashMap request){
         ResponseResult<String> result =  new ResponseResult(null,false);
         try {
+            String  openid = request.get("openid").toString();
             User user = userService.select(openid);
             if (user !=null){
-                user.setRealName(name);
-                user.setPhone(phone);
+                user.setRealName(request.get("name").toString());
+                user.setPhone(request.get("phone").toString());
                 userService.update(user);
                 result = new ResponseResult<String>("添加成功",true);
             }
