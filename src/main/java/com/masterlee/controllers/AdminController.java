@@ -22,10 +22,8 @@ import redis.clients.jedis.Jedis;
 
 
 import java.net.URI;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -121,8 +119,9 @@ public class AdminController {
     @ResponseBody
     public String checkCount(@RequestParam(required = true,value = "openid")String openid){
         ResponseResult<String> result =  new ResponseResult<String>("",false);
-        String count =  RedisUtil.get(openid);
+        String count =  RedisUtil.get("Count:"+openid);
         if (count ==null) {
+            result.setResponseStatus(true);
             return  JSON.toJSONString(result);
         }
          if(Long.parseLong(count)>2){
@@ -137,9 +136,36 @@ public class AdminController {
     public String checkCount(){
         ResponseResult<Question> result =  new ResponseResult(null,false);
         try {
+            Random random = new Random();
+            Integer question_random = random.nextInt(10);
+            String rediskey = "Question:"+question_random.toString();
+            String resultstr =  jedis.get(rediskey);
+            jedis.close();
+            if (resultstr!=null && resultstr.length()>0){
+                return  resultstr;
+            }
             List<Question>  list  = userService.selectQuestion();
-            result =  new ResponseResult(list,list.size(),true);
+            List<Question>  returnlist =  new ArrayList<>();
+            List<Question>  list1 = list.stream().filter(q ->q.getType()==false).collect(Collectors.toList());
+            while (returnlist.size()<5){
+                int index_random = random.nextInt(list1.size());
+                Question  entity = list1.get(index_random);
+                returnlist.add(entity);
+                list1.remove(index_random);
+            }
+            List<Question>  list2 = list.stream().filter(q ->q.getType()==true).collect(Collectors.toList());
+            while (returnlist.size()<10){
+                int index_random = random.nextInt(list2.size());
+                Question  entity = list2.get(index_random);
+                returnlist.add(entity);
+                list2.remove(index_random);
+            }
+            result =  new ResponseResult(returnlist,returnlist.size(),true);
+            jedis.set(rediskey,JSON.toJSONString(result));
+            jedis.expire(rediskey,12*60*60);
+            jedis.close();
         }catch (Exception e){
+            System.out.print(e.getMessage());
             e.printStackTrace();
         }
         return  JSON.toJSONString(result);
@@ -158,7 +184,7 @@ public class AdminController {
             entity.setTime(time);
             entity.setOpenId(openid);
             userService.insertScore(entity);
-            RedisUtil.incr(openid);
+            RedisUtil.incr("Count:"+openid);
             result = new ResponseResult<String>("添加成功",true);
         }catch (Exception e){
             e.printStackTrace();
