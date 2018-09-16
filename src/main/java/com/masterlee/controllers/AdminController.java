@@ -15,6 +15,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,7 @@ public class AdminController {
     private static String AppSecret = "e224e54ff8373742d3e8894023146a49";
 
     private  static  Jedis jedis = new Jedis("localhost",6379);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
     @RequestMapping(value = "/test",produces = "application/json; charset=utf-8")
     @ResponseBody
     public String  test(){
@@ -78,6 +81,7 @@ public class AdminController {
             }
         }catch(Exception e){
             e.printStackTrace();
+            LOGGER.error("getopenid  error " +e);
         }
         return JSON.toJSONString(result);
     }
@@ -112,6 +116,7 @@ public class AdminController {
             result = new ResponseResult<String>("",true);
         }catch (Exception e){
             e.printStackTrace();
+            LOGGER.error("userlogin  error " +e);
         }
         return  JSON.toJSONString(result);
     }
@@ -119,16 +124,22 @@ public class AdminController {
     @ResponseBody
     public String checkCount(@RequestParam(required = true,value = "openid")String openid){
         ResponseResult<String> result =  new ResponseResult<String>("",false);
-        String count =  RedisUtil.get("Count:"+openid);
-        if (count ==null) {
+        try {
+            String count =  RedisUtil.get("Count:"+openid);
+            if (count ==null) {
+                result.setResponseStatus(true);
+                return  JSON.toJSONString(result);
+            }
+            if(Long.parseLong(count)>2){
+                result.setResponseData("您的答题机会已用完");
+                return  JSON.toJSONString(result);
+            }
             result.setResponseStatus(true);
-            return  JSON.toJSONString(result);
+        }catch (Exception e){
+            LOGGER.error("checkcount  error " +e);
+            e.printStackTrace();
         }
-         if(Long.parseLong(count)>2){
-             result.setResponseData("您的答题机会已用完");
-             return  JSON.toJSONString(result);
-         }
-         result.setResponseStatus(true);
+
         return  JSON.toJSONString(result);
     }
     @RequestMapping(value = "/getquestion",method = {RequestMethod.GET},produces = "application/json; charset=utf-8")
@@ -165,7 +176,7 @@ public class AdminController {
             jedis.expire(rediskey,12*60*60);
             jedis.close();
         }catch (Exception e){
-            System.out.print(e.getMessage());
+            LOGGER.error("getquestion  error " +e);
             e.printStackTrace();
         }
         return  JSON.toJSONString(result);
@@ -187,6 +198,8 @@ public class AdminController {
             result = new ResponseResult<String>("添加成功",true);
         }catch (Exception e){
             e.printStackTrace();
+            LOGGER.error("uploadscore  error " +e);
+
         }
         return  JSON.toJSONString(result);
     }
@@ -204,6 +217,7 @@ public class AdminController {
                 result = new ResponseResult<String>("添加成功",true);
             }
         }catch (Exception e){
+            LOGGER.error("uploaduser  error " +e);
             e.printStackTrace();
         }
         return  JSON.toJSONString(result);
